@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.6.6; // solhint-disable-line
+pragma solidity ^0.8.10; // solhint-disable-line
 
-import "@chainlink/contracts/src/v0.6/interfaces/LinkTokenInterface.sol";
-import "@chainlink/contracts/src/v0.6/VRFConsumerBase.sol";
+import "chainlink/contracts/src/v0.8/interfaces/LinkTokenInterface.sol";
+import "chainlink/contracts/src/v0.8/VRFConsumerBase.sol";
 
 contract VRFCoordinatorMock {
     LinkTokenInterface public LINK;

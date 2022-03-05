@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.11;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@chainlink/contracts/src/v0.8/VRFConsumerBase.sol";
+import "openzeppelin/contracts/access/Ownable.sol";
+import "chainlink/contracts/src/v0.8/VRFConsumerBase.sol";
 
 /// @title On-Chain Raffle Mechanism
 /// @author @ItsCuzzo & @_anticlimactic
@@ -154,7 +154,7 @@ contract Raffle is Ownable, VRFConsumerBase {
 
     /// @notice Function used to enter the raffle.
     function enterRaffle() external payable {
-        require(tx.origin == msg.sender, "contracts cannot enter");
+        // require(tx.origin == msg.sender, "contracts cannot enter");
         require(
             block.timestamp >= raffle.depositStart,
             "before deposit start time"
