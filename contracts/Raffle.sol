@@ -179,6 +179,7 @@ contract Raffle is Ownable, VRFConsumerBase {
 
         require(amount > 0, "no balance");
 
+        totalDepositAmount -= entries[msg.sender].amountDeposited;
         entries[msg.sender].amountDeposited = 0;
         (bool success, ) = msg.sender.call{value: amount}("");
 
@@ -192,6 +193,7 @@ contract Raffle is Ownable, VRFConsumerBase {
         require(block.timestamp >= raffle.withdrawStart, "cannot withdraw yet");
 
         uint256 ownerFunds = address(this).balance - totalDepositAmount;
+        emit Withdraw(msg.sender, ownerFunds);
         require(ownerFunds > 0, "no balance");
 
         (bool success, ) = msg.sender.call{value: ownerFunds}("");
@@ -212,8 +214,8 @@ contract Raffle is Ownable, VRFConsumerBase {
             msg.sender
         );
 
+        totalDepositAmount -= entries[msg.sender].amountDeposited;
         entries[msg.sender].amountDeposited = 0;
-        totalDepositAmount -= raffle.entryCost;
 
         (bool success, ) = tokenContract.call(payload);
         require(success, "claim failed");
