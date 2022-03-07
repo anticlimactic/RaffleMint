@@ -6,6 +6,6 @@ Fixes # (issue)
 
 ## Checklist
 
-- [ ] I have run python3 and solidity linting (see ci: lint.yaml)
+- [ ] I have run solidity linting (yarn check && yarn lint)
 - [ ] I have run the tests on my machine
 - [ ] I have rebased my changes to the latest version of the main branch
