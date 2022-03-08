@@ -131,10 +131,11 @@ contract Raffle is Ownable, VRFConsumerBase {
             "out of mints"
         );
 
-        uint16 length = uint16(entrants.length);
+        uint256 length = uint256(entrants.length);
         uint256 nonce = nonceCache;
+        uint256 winners = uint256(numWinners);
 
-        for (uint16 i = 0; i < numWinners; i++) {
+        for (uint256 i = 0; i < winners; i = _unchecked_inc(i)) {
             nonce = uint256(keccak256(abi.encodePacked(nonce)));
 
             uint256 rng = nonce % (length - i);
@@ -148,7 +149,9 @@ contract Raffle is Ownable, VRFConsumerBase {
             emit RaffleWinner(winner);
         }
 
-        raffle.totalChosen += numWinners;
+        unchecked {
+            raffle.totalChosen += numWinners;
+        }
         nonceCache = nonce;
     }
 
@@ -163,7 +166,9 @@ contract Raffle is Ownable, VRFConsumerBase {
         require(raffle.entryCost == msg.value, "incorrect Ether amount");
         require(entries[msg.sender].amountDeposited == 0, "already entered");
 
-        totalDepositAmount += msg.value;
+        unchecked {
+            totalDepositAmount += msg.value;
+        }
         entries[msg.sender].amountDeposited = uint248(msg.value);
 
         entrants.push(msg.sender);
@@ -179,7 +184,9 @@ contract Raffle is Ownable, VRFConsumerBase {
 
         require(amount > 0, "no balance");
 
-        totalDepositAmount -= entries[msg.sender].amountDeposited;
+        unchecked {
+            totalDepositAmount -= entries[msg.sender].amountDeposited;
+        }
         entries[msg.sender].amountDeposited = 0;
         (bool success, ) = msg.sender.call{value: amount}("");
 
@@ -214,7 +221,9 @@ contract Raffle is Ownable, VRFConsumerBase {
             msg.sender
         );
 
-        totalDepositAmount -= entries[msg.sender].amountDeposited;
+        unchecked {
+            totalDepositAmount -= entries[msg.sender].amountDeposited;
+        }
         entries[msg.sender].amountDeposited = 0;
 
         (bool success, ) = tokenContract.call(payload);
@@ -227,5 +236,12 @@ contract Raffle is Ownable, VRFConsumerBase {
     function setTokenContract(address tokenContract_) public onlyOwner {
         require(!locked, "contract is locked");
         tokenContract = tokenContract_;
+    }
+
+    /// @notice Unchecked increment saves gas.
+    function _unchecked_inc(uint256 i) private returns (uint256) {
+        unchecked {
+            return i + 1;
+        }
     }
 }

@@ -38,11 +38,13 @@ contract GasTest is DSTest {
     function setUp() public {
         linkToken = new LinkToken();
         vrfCoordinator = new VRFCoordinatorMock(address(linkToken));
-        mint = new Mint(
-            "Test",
-            "TEST"
+        mint = new Mint("Test", "TEST");
+        raffle = new Raffle(
+            address(vrfCoordinator),
+            address(linkToken),
+            0,
+            10**17
         );
-        raffle = new Raffle(address(vrfCoordinator), address(linkToken), 0, 10**17);
         raffle.setTokenContract(address(mint));
 
         uint32 depositStart = uint32(block.timestamp) + 1 days;
@@ -80,7 +82,7 @@ contract GasTest is DSTest {
         bytes32 requestId = raffle.fetchNonce();
         vrfCoordinator.callBackWithRandomness(requestId, 777, address(raffle));
 
-        (, uint32 totalWinners,,,,,) = raffle.raffle();
+        (, uint32 totalWinners, , , , , ) = raffle.raffle();
         uint256 repetitions = totalWinners / 100;
         for (uint256 i = 0; i < repetitions; i++) {
             raffle.selectWinners(100);
